@@ -8,14 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by fancheng on 2016/6/20.
  */
 public class GrapeWeatherOpenHelper extends SQLiteOpenHelper{
-    /*
+    /**
     Province建表语句
      */
     public static final String CREATE_PROVINCE = "create table Province(" +
             "id integer primary key autoincrement," +
             "province_name text," +
             "province_code text)";
-    /*
+    /**
     City建表语句
      */
     public static final String CREATE_CITY = "create table City(" +
@@ -23,13 +23,13 @@ public class GrapeWeatherOpenHelper extends SQLiteOpenHelper{
             "city_name text," +
             "city_code text," +
             "province_id integer)";
-    /*
+    /**
     County建表语句
      */
     public static final String CREATE_COUNTY = "create table County(" +
             "id integer primary key autoincrement," +
             "county_name text," +
-            "county_code text" +
+            "county_code text," +
             "city_id integer)";
     public GrapeWeatherOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

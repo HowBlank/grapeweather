@@ -12,11 +12,11 @@ import java.util.List;
  * Created by fancheng on 2016/6/20.
  */
 public class GrapeWeatherDB  {
-    /*
+    /**
     数据库名
      */
     public static final String DB_NAME = "grape_weather";
-    /*
+    /**
     数据库版本
      */
     public static final int VERSION = 1;
@@ -27,7 +27,7 @@ public class GrapeWeatherDB  {
                 context,DB_NAME,null,VERSION);
         db = grapeWeatherOpenHelper.getWritableDatabase();
     }
-    /*
+    /**
     获取GrapeWeatherDB的实例
      */
     public synchronized static GrapeWeatherDB getInstance(Context context){
@@ -36,7 +36,7 @@ public class GrapeWeatherDB  {
         }
         return grapeWeatherDB;
     }
-    /*
+    /**
     将Province实例存储到数据库中
      */
     public void saveProvince(Province province){
@@ -48,13 +48,13 @@ public class GrapeWeatherDB  {
             db.insert("Province", null, contentValues);
         }
     }
-    /*
+    /**
     取出所有的省份信息
      */
     public List<Province> loadProvinces(){
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = null;
-        cursor = db.query(DB_NAME,null,null,null,null,null,null);
+        cursor = db.query("Province",null,null,null,null,null,null);
 
         if(cursor.moveToFirst()){
             do{
@@ -72,10 +72,10 @@ public class GrapeWeatherDB  {
 
         return list;
     }
-    /*
+    /**
     将city对象存进数据库
      */
-    private void saveCity(City city){
+    public void saveCity(City city){
         if(city != null) {
             ContentValues contentValues = new ContentValues();
             contentValues.put("city_name",city.getCityName());
@@ -84,10 +84,10 @@ public class GrapeWeatherDB  {
             db.insert("City",null,contentValues);
         }
     }
-    /*
+    /**
     取出对应省份的所有城市信息
      */
-    private List<City> loadCities(int provinceId){
+    public List<City> loadCities(int provinceId){
         List<City> list = new ArrayList<City>();
         Cursor cursor = db.query("City",null,"province_id = ?",new String[]{String.valueOf(provinceId)},
                 null,null,null);
@@ -106,10 +106,10 @@ public class GrapeWeatherDB  {
         }
         return list;
     }
-    /*
+    /**
     将County实例存入数据库
      */
-    private void saveCounty(County county){
+    public void saveCounty(County county){
         if(county != null){
             ContentValues values = new ContentValues();
             values.put("county_name",county.getCountyName());
@@ -118,7 +118,11 @@ public class GrapeWeatherDB  {
             db.insert("County",null,values);
         }
     }
-    private List<County> loadCounty(int cityId){
+
+    /**
+     * 取出某城市下所有的县信息
+     */
+    public List<County> loadCounty(int cityId){
         List<County> list = new ArrayList<County>();
         Cursor cursor = db.query("County",null,"city_id = ?",new String[]{String.valueOf(cityId)},
                 null,null,null);
