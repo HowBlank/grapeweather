@@ -19,6 +19,14 @@
         <activity
             android:name="com.grapeweather.app.activity.WeatherActivity">
         </activity>
+        <service
+            android:name="com.grapeweather.app.servvice.AutoUpdateService">
+
+        </service>
+        <receiver
+            android:name="com.grapeweather.app.receiver.UpdateReceiver">
+
+        </receiver>
     </application>
 
 </manifest>

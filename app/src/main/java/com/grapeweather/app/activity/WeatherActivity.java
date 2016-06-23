@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.grapeweather.app.R;
+import com.grapeweather.app.servvice.AutoUpdateService;
 import com.grapeweather.app.utils.HttpCallBackListener;
 import com.grapeweather.app.utils.HttpUtil;
 import com.grapeweather.app.utils.Utility;
@@ -149,5 +150,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener {
         currentDateText.setText(sf.getString("current_date",""));
         cityNameText.setVisibility(View.VISIBLE);
         weatherInfoLayout.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 }
