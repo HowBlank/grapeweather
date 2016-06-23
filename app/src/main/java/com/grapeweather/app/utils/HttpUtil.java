@@ -3,6 +3,7 @@ package com.grapeweather.app.utils;
 import android.net.Uri;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -19,15 +20,16 @@ public class HttpUtil {
             @Override
             public void run() {
                 HttpURLConnection connection = null;
+
                 try {
                     URL url = new URL(address);
                     connection = (HttpURLConnection)url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
+                    connection.setReadTimeout(10000);
                     InputStream in = connection.getInputStream();
                     BufferedReader bf = new BufferedReader(new InputStreamReader(in));
-                    String line;
+                    String line = null;
                     StringBuilder response = new StringBuilder();
                     while ((line = bf.readLine())!= null){
                         response.append(line);
@@ -40,9 +42,11 @@ public class HttpUtil {
                         listener.onError(e);
                     }
                 }finally {
+
                     if(connection != null){
                         connection.disconnect();
                     }
+
                 }
             }
         }).start();

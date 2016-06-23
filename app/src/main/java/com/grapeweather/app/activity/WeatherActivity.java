@@ -1,12 +1,17 @@
 package com.grapeweather.app.activity;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,7 +25,7 @@ import java.net.URL;
 /**
  * Created by fancheng on 2016/6/22.
  */
-public class WeatherActivity extends Activity {
+public class WeatherActivity extends Activity implements View.OnClickListener {
 
     private LinearLayout weatherInfoLayout;
     private TextView cityNameText;
@@ -29,10 +34,14 @@ public class WeatherActivity extends Activity {
     private TextView weatherDespText;
     private TextView temp1Text;
     private TextView temp2Text;
+    private Button switchCity;
+    private Button refreshWeather;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.weather_layout);
         weatherInfoLayout = (LinearLayout)findViewById(R.id.weather_info_layout);
         cityNameText = (TextView)findViewById(R.id.city_name);
@@ -50,17 +59,44 @@ public class WeatherActivity extends Activity {
         }else{
             showWeatherInfo();
         }
+        switchCity = (Button)findViewById(R.id.switch_city);
+        refreshWeather = (Button)findViewById(R.id.refresh_weather);
+        switchCity.setOnClickListener(this);
+        refreshWeather.setOnClickListener(this);
+    }
+
+    public void onClick(View view){
+        switch(view.getId()){
+            case R.id.switch_city :
+                Intent intent = new Intent(this,ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity",true);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.refresh_weather :
+                publishText.setText("同步中...");
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+                String weatherCode = sp.getString("weather_code","");
+                if(!TextUtils.isEmpty(weatherCode)) {
+                    queryWeatherInfo(weatherCode);
+                }
+                break;
+            default:
+                break;
+        }
     }
     private void queryWeatherCode(String countyCode){
         String address = "http://www.weather.com.cn/data/list3/city"+countyCode+".xml";
         queryFromServer(address,"countyCode");
     }
     private void queryWeatherInfo(String weatherCode){
-        String address = "http://www.weather.com.cn/data/cityinfo/"+weatherCode+".html";
-        queryFromServer(address,"weatherCode");
+        String address1 = "http://www.weather.com.cn/data/cityinfo/"+weatherCode+".html";
+//        Log.e("MyActivity",address1);
+        queryFromServer(address1, "weatherCode");
     }
 
-    private void queryFromServer(String address,final String type){
+    private void queryFromServer(final String address,final String type){
+//        Log.e("MyActivity",address);
         HttpUtil.sendHttpRequest(address,new HttpCallBackListener() {
             @Override
             public void onFinish(String response) {
@@ -85,16 +121,24 @@ public class WeatherActivity extends Activity {
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(final Exception e) {
+
+
                   runOnUiThread(new Runnable() {
                       @Override
                       public void run() {
+//                          e.printStackTrace();
                           publishText.setText("同步失败");
+
                       }
                   });
             }
         });
     }
+
+    /**
+     * 显示天气信息
+     */
     private void showWeatherInfo(){
         SharedPreferences sf = PreferenceManager.getDefaultSharedPreferences(this);
         cityNameText.setText(sf.getString("city_name",""));

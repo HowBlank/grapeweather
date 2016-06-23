@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Adapter;
@@ -51,14 +52,15 @@ public class ChooseAreaActivity extends Activity {
     private List<City> cityList;
     private City selectedCity;
     private List<County> countyList;
-    private County selectedCounty;
+
+    private boolean isFromWeatherActivity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
         SharedPreferences sf = PreferenceManager.getDefaultSharedPreferences(this);
         boolean result = sf.getBoolean("city_selected",false);
-        if(result){
+        if(result && !isFromWeatherActivity){
             Intent intent = new Intent(this,WeatherActivity.class);
             startActivity(intent);
             finish();
@@ -81,8 +83,9 @@ public class ChooseAreaActivity extends Activity {
                     selectedCity = cityList.get(position);
                     queryCounty();
                 }else if(currentLevel == LEVEL_COUNTY){
-                    selectedCounty = countyList.get(position);
-                    String countyCode = selectedCounty.getCountyCode();
+
+                    String countyCode = countyList.get(position).getCountyCode();
+//                    Log.d("MyActivity",countyCode);
                     Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
                     intent.putExtra("county_code",countyCode);
                     startActivity(intent);
@@ -148,7 +151,7 @@ public class ChooseAreaActivity extends Activity {
         }
 
     }
-    private void queryFromServer(String code,final String type){
+    private void queryFromServer(final String code,final String type){
         String address;
          if(!TextUtils.isEmpty(code)){
              address = "http://www.weather.com.cn/data/list3/city"+code+".xml";
@@ -230,6 +233,11 @@ public class ChooseAreaActivity extends Activity {
         }else if(currentLevel ==LEVEL_CITY){
             queryProvinces();
         }else {
+            if(isFromWeatherActivity){
+                Intent intent = new Intent(this,WeatherActivity.class);
+                startActivity(intent);
+
+            }
             finish();
         }
     }

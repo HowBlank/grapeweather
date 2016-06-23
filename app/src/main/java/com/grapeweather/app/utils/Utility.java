@@ -64,7 +64,7 @@ public class Utility {
     /**
      * 解析和处理服务器返回的省级数据
      */
-    public static boolean handleProvinceResponse(String response,GrapeWeatherDB grapeWeatherDB){
+    public synchronized static boolean handleProvinceResponse(String response,GrapeWeatherDB grapeWeatherDB){
         if(!TextUtils.isEmpty(response)) {
             String[] provinces = response.split(",");
             if(provinces!=null&&provinces.length>0) {
