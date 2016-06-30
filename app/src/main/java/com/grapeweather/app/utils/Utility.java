@@ -26,7 +26,7 @@ public class Utility {
      * 解析和处理服务器返回的JSON数据，并将数据存储到本地
      */
     public static void handleWeatherResponse(String response,Context context){
-        if(!TextUtils.isEmpty(response)){
+
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 JSONObject js = jsonObject.getJSONObject("weatherinfo");
@@ -43,11 +43,11 @@ public class Utility {
                 e.printStackTrace();
             }
 
-        }
+
     }
     public static void saveWeatherInfo(Context context,String cityName,String weatherCode,
                                  String temp1,String temp2,String weatherDesp,String publishTime){
-        DateFormat df = new SimpleDateFormat("yyy年M月d日", Locale.CHINA);
+        SimpleDateFormat df = new SimpleDateFormat("yyy年M月d日", Locale.CHINA);
 
         SharedPreferences.Editor editor = PreferenceManager.
                 getDefaultSharedPreferences(context).edit();
